@@ -88,31 +88,16 @@ struct node* removeNode(struct node* head, char *id) {
         prev = p;
         p = p->next;
     }
-    if (p->next == head) { //poslednji
-        if (p == head) {
-            head = NULL;
-            freeNode(p);
-            return head;
-        }
-        prev->next = head;
-        head = p->next;
-        freeNode(p);
-    }
-    else if (p->next == head && p == head) { //ako je jedini
+    if (p->next == head && p == head) {
         head = NULL;
         freeNode(p);
-        
+        return head;
     }
-    else if (p == head) { //prvi
-        prev->next = p->next;
+    prev->next = p->next;
+    if (p == head) {
         head = p->next;
-        freeNode(p);
     }
-    else {
-        prev->next = p->next;
-        freeNode(p);
-    }
-    
+    freeNode(p);
     return head;
 }
 
