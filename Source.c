@@ -67,6 +67,11 @@ void printLinked(struct node* head) {
     }while (p != head);
 }
 
+void freeNode(struct node* temp) {
+    free(temp->id);
+    free(temp);
+}
+//proveri iz knjige
 struct node* removeNode(struct node* head, char *id) {
     struct node* p = head;
     struct node* prev = head;
@@ -76,7 +81,6 @@ struct node* removeNode(struct node* head, char *id) {
         prev = prev->next;
     } while (prev->next != head);
 
-    if (head == NULL)return NULL;
     while (p->id != id) {
         if (p->next == head) {
             return NULL; //ako ga nema
@@ -87,33 +91,33 @@ struct node* removeNode(struct node* head, char *id) {
     if (p->next == head) { //poslednji
         if (p == head) {
             head = NULL;
-            free(p);
+            freeNode(p);
             return head;
         }
         prev->next = head;
         head = p->next;
-        free(p);
+        freeNode(p);
     }
     else if (p->next == head && p == head) { //ako je jedini
         head = NULL;
-        free(p);
+        freeNode(p);
         
     }
     else if (p == head) { //prvi
         prev->next = p->next;
         head = p->next;
-        free(p);
+        freeNode(p);
     }
     else {
         prev->next = p->next;
-        free(p);
+        freeNode(p);
     }
     
     return head;
 }
 
 //pogledaj za imena i prezimena da l mogu biti ista?
-struct node* josephProblem(struct node *head, int start, int n, int elemnum) {
+void josephProblem(struct node *head, int start, int n, int elemnum) {
     struct node* p = head;
     int j = 0;
     char* temp = "*\0";
@@ -125,7 +129,11 @@ struct node* josephProblem(struct node *head, int start, int n, int elemnum) {
     
     while (head != NULL) {
         int k = strlen(p->id);
-        p->id = realloc(p->id, sizeof(char) * (k + 1));
+        p->id = realloc(p->id, sizeof(char) * (k + 2));
+        if (!p->id) {
+            printf("MEM_GRESKA\n");
+            exit(0);
+        }
         strcat(p->id, temp);
         printf("STEP%d\n", j++);
         printLinked(head);
@@ -141,7 +149,6 @@ struct node* josephProblem(struct node *head, int start, int n, int elemnum) {
         head = removeNode(head, rem);
         elemnum--;
     }
-    return head;
 }
 
 
@@ -159,7 +166,7 @@ int main() {
         exit(0);
     }
     printLinked(begin);
-    begin = josephProblem(begin, start, n, elem_num);
-    //_crtdumpmemoryleaks();
+    josephProblem(begin, start, n, elem_num);
+    _CrtDumpMemoryLeaks();
 	return 0;
 }
