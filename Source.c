@@ -27,6 +27,11 @@ struct node {
     int flag;
 }NODE;
 
+void freeNode(struct node* temp) {
+    free(temp->id);
+    free(temp);
+}
+
 struct node* createNode() {
     struct node* newnode = malloc(sizeof(struct node));
     if (!newnode) {
@@ -37,7 +42,11 @@ struct node* createNode() {
     newnode->id = readLine();
     newnode->flag = 0;
     //printf("%d", isSpace(newnode->id));
-    if (newnode->id == NULL)return NULL;
+    if (newnode->id == NULL) {
+        freeNode(newnode);
+        return NULL;
+    }
+
     return newnode;
 }
 
@@ -67,10 +76,6 @@ void printLinked(struct node* head) {
     }while (p != head);
 }
 
-void freeNode(struct node* temp) {
-    free(temp->id);
-    free(temp);
-}
 //proveri iz knjige
 struct node* removeNode(struct node* head, char *id) {
     struct node* p = head;
