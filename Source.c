@@ -41,7 +41,6 @@ struct node* createNode() {
     newnode->next = NULL;
     newnode->id = readLine();
     newnode->flag = 0;
-    //printf("%d", isSpace(newnode->id));
     if (newnode->id == NULL) {
         freeNode(newnode);
         return NULL;
@@ -76,49 +75,45 @@ void printLinked(struct node* head) {
     }while (p != head);
 }
 
-//proveri iz knjige
-struct node* removeNode(struct node* head, char *id) {
+struct node* remo(struct node* head, struct node** remove) {
     struct node* p = head;
-    struct node* prev = head;
+    struct node* n = (*remove)->next;
     if (head == NULL)return NULL;
-    do
-    {
-        prev = prev->next;
-    } while (prev->next != head);
-
-    while (p->id != id) {
-        if (p->next == head) {
-            return NULL; //ako ga nema
-        }
-        prev = p;
+    while (p->next != (*remove)) {
         p = p->next;
     }
-    if (p->next == head && p == head) {
+    if ((*remove)->next == head && (*remove) == head) {
         head = NULL;
-        freeNode(p);
+        freeNode((*remove));
+        remove = NULL;
         return head;
     }
-    prev->next = p->next;
-    if (p == head) {
-        head = p->next;
+    p->next = n;
+    if (head == (*remove)) {
+        head = n;
     }
-    freeNode(p);
+    freeNode((*remove));
+    (*remove) = n;
     return head;
 }
 
-//pogledaj za imena i prezimena da l mogu biti ista?
 void josephProblem(struct node *head, int start, int n, int elemnum) {
     struct node* p = head;
     int j = 0;
     char* temp = "*\0";
-    int i = 0;
-    while (i < start) {
-        p = p->next;
-        i++;
-    }
+    int i;
+    
+    int numofmoves = start;
     
     while (head != NULL) {
+        i = 0;
+        while (i < numofmoves) {
+            p = p->next;
+            i++;
+        }
+        numofmoves = n-1;
         int k = strlen(p->id);
+
         p->id = realloc(p->id, sizeof(char) * (k + 2));
         if (!p->id) {
             printf("MEM_GRESKA\n");
@@ -126,17 +121,11 @@ void josephProblem(struct node *head, int start, int n, int elemnum) {
         }
         strcat(p->id, temp);
         printf("STEP%d\n", j++);
-        printLinked(head);
-        char* rem = p->id;
-        i = 0;
+        //funk za to
         p->flag = 1;
-        
-        while (i < n) {
-            p = p->next;
-            i++;
-        }
-        if (p->flag == 1)p = p->next;
-        head = removeNode(head, rem);
+        printLinked(head);
+
+        head = remo(head, &p);
         elemnum--;
     }
 }
