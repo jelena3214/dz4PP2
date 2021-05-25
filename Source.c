@@ -70,7 +70,12 @@ void printLinked(struct node* head) {
     if (head == NULL)head = NULL;
     do
     {
-        printf("%s\n", p->id);
+        if (p->flag == 0) {
+            printf("%s\n", p->id);
+        }
+        else {
+            printf("%s*\n", p->id);
+        }
         p = p->next;
     }while (p != head);
 }
@@ -100,7 +105,6 @@ struct node* remo(struct node* head, struct node** remove) {
 void josephProblem(struct node *head, int start, int n, int elemnum) {
     struct node* p = head;
     int j = 0;
-    char* temp = "*\0";
     int i;
     
     int numofmoves = start;
@@ -112,16 +116,7 @@ void josephProblem(struct node *head, int start, int n, int elemnum) {
             i++;
         }
         numofmoves = n-1;
-        int k = strlen(p->id);
-
-        p->id = realloc(p->id, sizeof(char) * (k + 2));
-        if (!p->id) {
-            printf("MEM_GRESKA\n");
-            exit(0);
-        }
-        strcat(p->id, temp);
         printf("STEP%d\n", j++);
-        //funk za to
         p->flag = 1;
         printLinked(head);
 
